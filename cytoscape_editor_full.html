@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>완전한 그래프 편집기 (Cytoscape.js)</title>
+  <style>
+    #cy {
+      width: 100%;
+      height: 90vh;
+      display: block;
+      border: 1px solid #ccc;
+    }
+    #controls {
+      margin: 10px;
+    }
+    label {
+      margin-right: 5px;
+    }
+  </style>
+  <script src="https://unpkg.com/cytoscape@3.25.0/dist/cytoscape.min.js"></script>
+  <script src="https://unpkg.com/dagre@0.8.5/dist/dagre.min.js"></script>
+  <script src="https://unpkg.com/cytoscape-dagre@2.4.0/cytoscape-dagre.js"></script>
+</head>
+<body>
+
+<h2>완전한 그래프 편집기 (Cytoscape.js)</h2>
+
+<div id="controls">
+  <input type="file" id="file-input" />
+  <button onclick="downloadGraph()">Save as JSON</button>
+  <button onclick="layoutGraph()">Re-layout</button>
+  <br><br>
+  <label>New Node ID:</label><input type="text" id="new-node-id">
+  <label>Weight:</label><input type="number" id="new-node-weight" step="0.01" value="1.0">
+  <button onclick="addNode()">Add Node</button>
+  <br><br>
+  <label>From:</label><input type="text" id="edge-source">
+  <label>To:</label><input type="text" id="edge-target">
+  <label>Stage:</label>
+  <select id="edge-stage">
+    <option value="Reconnaissance">Reconnaissance</option>
+    <option value="Initial_Access">Initial_Access</option>
+    <option value="Command_and_Control">Command_and_Control</option>
+  </select>
+  <button onclick="addEdge()">Add Edge</button>
+</div>
+
+<div id="cy"></div>
+
+<script>
+let cy = cytoscape({
+  container: document.getElementById('cy'),
+  elements: [],
+  style: [
+    {
+      selector: 'node',
+      style: {
+        'label': 'data(id)',
+        'width': 'mapData(weight, 0, 1, 20, 60)',
+        'height': 'mapData(weight, 0, 1, 20, 60)',
+        'background-color': '#61bffc',
+        'text-valign': 'center',
+        'color': '#222',
+        'font-size': 12,
+        'text-outline-width': 1,
+        'text-outline-color': '#fff'
+      }
+    },
+    {
+      selector: 'edge',
+      style: {
+        'label': 'data(stage)',
+        'width': 2,
+        'line-color': '#ccc',
+        'target-arrow-color': '#ccc',
+        'target-arrow-shape': 'triangle',
+        'curve-style': 'bezier',
+        'font-size': 10,
+        'text-rotation': 'autorotate'
+      }
+    },
+    {
+      selector: ':selected',
+      style: {
+        'background-color': '#ff6666',
+        'line-color': '#ff6666',
+        'target-arrow-color': '#ff6666',
+        'source-arrow-color': '#ff6666'
+      }
+    }
+  ],
+  layout: { name: 'dagre' }
+});
+
+function layoutGraph() {
+  cy.layout({ name: 'dagre' }).run();
+}
+
+document.getElementById('file-input').addEventListener('change', function(evt) {
+  const file = evt.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const content = JSON.parse(e.target.result);
+    cy.elements().remove();
+    cy.add(content);
+    layoutGraph();
+  };
+  reader.readAsText(file);
+});
+
+function downloadGraph() {
+  const elements = cy.json().elements;
+  const blob = new Blob([JSON.stringify(elements, null, 2)], {type: "application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "cyto_graph_modified.json";
+  a.click();
+}
+
+function addNode() {
+  const id = document.getElementById("new-node-id").value.trim();
+  const weight = parseFloat(document.getElementById("new-node-weight").value);
+  if (!id) return alert("Node ID를 입력하세요.");
+  if (cy.getElementById(id).length > 0) return alert("이미 존재하는 Node ID입니다.");
+  cy.add({ group: 'nodes', data: { id: id, weight: weight } });
+  layoutGraph();
+}
+
+function addEdge() {
+  const source = document.getElementById("edge-source").value.trim();
+  const target = document.getElementById("edge-target").value.trim();
+  const stage = document.getElementById("edge-stage").value;
+  if (!source || !target) return alert("출발지/도착지를 입력하세요.");
+  cy.add({ group: 'edges', data: { source, target, stage } });
+  layoutGraph();
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,284 @@
+{
+  "nodes": [
+    {
+      "data": {
+        "id": "VPN_PC",
+        "weight": 1.0
+      }
+    },
+    {
+      "data": {
+        "id": "OA_PC",
+        "weight": 1.0
+      }
+    },
+    {
+      "data": {
+        "id": "OA_VDI",
+        "weight": 1.0
+      }
+    },
+    {
+      "data": {
+        "id": "1층",
+        "weight": 1.0
+      }
+    },
+    {
+      "data": {
+        "id": "SAC_SSM",
+        "weight": 1.0
+      }
+    },
+    {
+      "data": {
+        "id": "Apex_One",
+        "weight": 1.0
+      }
+    },
+    {
+      "data": {
+        "id": "SCCM",
+        "weight": 1.0
+      }
+    },
+    {
+      "data": {
+        "id": "DRM",
+        "weight": 1.0
+      }
+    },
+    {
+      "data": {
+        "id": "F/OA_Proxy",
+        "weight": 1.0
+      }
+    },
+    {
+      "data": {
+        "id": "Active_Directory",
+        "weight": 1.0
+      }
+    },
+    {
+      "data": {
+        "id": "CloudX",
+        "weight": 1.0
+      }
+    },
+    {
+      "data": {
+        "id": "Intranet_MGMT_Server",
+        "weight": 1.0
+      }
+    },
+    {
+      "data": {
+        "id": "Nutanix",
+        "weight": 1.0
+      }
+    },
+    {
+      "data": {
+        "id": "ALL_OA_PC",
+        "weight": 0.01
+      }
+    },
+    {
+      "data": {
+        "id": "ALL_SVDI_FVDI_AWS_Proxy",
+        "weight": 1.0
+      }
+    },
+    {
+      "data": {
+        "id": "Hacker_Internet",
+        "weight": 0.0001
+      }
+    }
+  ],
+  "edges": [
+    {
+      "data": {
+        "source": "VPN_PC",
+        "target": "SAC_SSM",
+        "stage": "Reconnaissance"
+      }
+    },
+    {
+      "data": {
+        "source": "OA_PC",
+        "target": "SAC_SSM",
+        "stage": "Reconnaissance"
+      }
+    },
+    {
+      "data": {
+        "source": "OA_VDI",
+        "target": "SAC_SSM",
+        "stage": "Reconnaissance"
+      }
+    },
+    {
+      "data": {
+        "source": "1층",
+        "target": "SAC_SSM",
+        "stage": "Reconnaissance"
+      }
+    },
+    {
+      "data": {
+        "source": "SAC_SSM",
+        "target": "Apex_One",
+        "stage": "Initial_Access"
+      }
+    },
+    {
+      "data": {
+        "source": "SAC_SSM",
+        "target": "SCCM",
+        "stage": "Initial_Access"
+      }
+    },
+    {
+      "data": {
+        "source": "SAC_SSM",
+        "target": "DRM",
+        "stage": "Initial_Access"
+      }
+    },
+    {
+      "data": {
+        "source": "SAC_SSM",
+        "target": "F/OA_Proxy",
+        "stage": "Initial_Access"
+      }
+    },
+    {
+      "data": {
+        "source": "SAC_SSM",
+        "target": "Active_Directory",
+        "stage": "Initial_Access"
+      }
+    },
+    {
+      "data": {
+        "source": "SAC_SSM",
+        "target": "CloudX",
+        "stage": "Initial_Access"
+      }
+    },
+    {
+      "data": {
+        "source": "SAC_SSM",
+        "target": "Intranet_MGMT_Server",
+        "stage": "Initial_Access"
+      }
+    },
+    {
+      "data": {
+        "source": "SAC_SSM",
+        "target": "Nutanix",
+        "stage": "Initial_Access"
+      }
+    },
+    {
+      "data": {
+        "source": "Nutanix",
+        "target": "Intranet_MGMT_Server",
+        "stage": "Initial_Access"
+      }
+    },
+    {
+      "data": {
+        "source": "Intranet_MGMT_Server",
+        "target": "SCCM",
+        "stage": "Command_and_Control"
+      }
+    },
+    {
+      "data": {
+        "source": "Intranet_MGMT_Server",
+        "target": "DRM",
+        "stage": "Command_and_Control"
+      }
+    },
+    {
+      "data": {
+        "source": "Intranet_MGMT_Server",
+        "target": "F/OA_Proxy",
+        "stage": "Command_and_Control"
+      }
+    },
+    {
+      "data": {
+        "source": "Intranet_MGMT_Server",
+        "target": "Active_Directory",
+        "stage": "Command_and_Control"
+      }
+    },
+    {
+      "data": {
+        "source": "Intranet_MGMT_Server",
+        "target": "CloudX",
+        "stage": "Command_and_Control"
+      }
+    },
+    {
+      "data": {
+        "source": "Apex_One",
+        "target": "ALL_OA_PC",
+        "stage": "Command_and_Control"
+      }
+    },
+    {
+      "data": {
+        "source": "SCCM",
+        "target": "ALL_OA_PC",
+        "stage": "Command_and_Control"
+      }
+    },
+    {
+      "data": {
+        "source": "DRM",
+        "target": "ALL_OA_PC",
+        "stage": "Command_and_Control"
+      }
+    },
+    {
+      "data": {
+        "source": "F/OA_Proxy",
+        "target": "ALL_SVDI_FVDI_AWS_Proxy",
+        "stage": "Command_and_Control"
+      }
+    },
+    {
+      "data": {
+        "source": "Active_Directory",
+        "target": "ALL_SVDI_FVDI_AWS_Proxy",
+        "stage": "Command_and_Control"
+      }
+    },
+    {
+      "data": {
+        "source": "CloudX",
+        "target": "ALL_SVDI_FVDI_AWS_Proxy",
+        "stage": "Command_and_Control"
+      }
+    },
+    {
+      "data": {
+        "source": "ALL_OA_PC",
+        "target": "Hacker_Internet",
+        "stage": "Command_and_Control"
+      }
+    },
+    {
+      "data": {
+        "source": "ALL_SVDI_FVDI_AWS_Proxy",
+        "target": "Hacker_Internet",
+        "stage": "Command_and_Control"
+      }
+    }
+  ]
+}

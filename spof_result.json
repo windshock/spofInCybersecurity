@@ -1,0 +1,17 @@
+{
+  "Intranet_MGMT_Server": "absolute",
+  "Server_Access_Gateway": "absolute",
+  "Nutanix": "absolute",
+  "Vaccine": "relative",
+  "SCCM": "relative",
+  "Active_Directory": "relative",
+  "PC_Proxy": "relative",
+  "VPN_PC": "redundant",
+  "OA_PC": "redundant",
+  "OA_VDI": "redundant",
+  "Firstfloor_PC": "redundant",
+  "DRM": "redundant",
+  "VDI": "low",
+  "ALL_VDI_Cloud_Proxy": "relative",
+  "ALL_OA_PC": "relative"
+}

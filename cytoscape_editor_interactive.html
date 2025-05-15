@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>인터랙티브 그래프 편집기 (Cytoscape.js)</title>
+  <style>
+    #cy {
+      width: 100%;
+      height: 90vh;
+      display: block;
+      border: 1px solid #ccc;
+    }
+    #menu {
+      margin: 10px;
+    }
+    .overlay {
+      position: absolute;
+      top: 30px;
+      left: 30px;
+      padding: 10px;
+      background: #f2f2f2;
+      border: 1px solid #999;
+      display: none;
+    }
+    .overlay input, .overlay select, .overlay button {
+      margin: 5px;
+    }
+  </style>
+  <script src="https://unpkg.com/cytoscape@3.25.0/dist/cytoscape.min.js"></script>
+  <script src="https://unpkg.com/dagre@0.8.5/dist/dagre.min.js"></script>
+  <script src="https://unpkg.com/cytoscape-dagre@2.4.0/cytoscape-dagre.js"></script>
+</head>
+<body>
+
+<h2>인터랙티브 그래프 편집기 (Cytoscape.js)</h2>
+<div id="menu">
+  <input type="file" id="file-input" />
+  <button onclick="downloadGraph()">Save as JSON</button>
+  <button onclick="layoutGraph()">Re-layout</button>
+</div>
+<div id="cy"></div>
+
+<div class="overlay" id="node-popup">
+  <label>Node ID: </label><input type="text" id="popup-node-id"><br>
+  <label>Weight: </label><input type="number" id="popup-node-weight" step="0.01" value="1.0"><br>
+  <button onclick="confirmAddNode()">Add Node</button>
+  <button onclick="closePopup()">Cancel</button>
+</div>
+
+<div class="overlay" id="edge-popup">
+  <p>Connect: <span id="edge-source"></span> → <span id="edge-target"></span></p>
+  <label>Stage:</label>
+  <select id="popup-edge-stage">
+    <option value="Reconnaissance">Reconnaissance</option>
+    <option value="Initial_Access">Initial_Access</option>
+    <option value="Command_and_Control">Command_and_Control</option>
+  </select>
+  <br>
+  <button onclick="confirmAddEdge()">Add Edge</button>
+  <button onclick="closePopup()">Cancel</button>
+</div>
+
+<script>
+let cy = cytoscape({
+  container: document.getElementById('cy'),
+  elements: [],
+  style: [
+    {
+      selector: 'node',
+      style: {
+        'label': 'data(id)',
+        'width': 'mapData(weight, 0, 1, 20, 60)',
+        'height': 'mapData(weight, 0, 1, 20, 60)',
+        'background-color': '#61bffc',
+        'text-valign': 'center',
+        'color': '#222',
+        'font-size': 12
+      }
+    },
+    {
+      selector: 'edge',
+      style: {
+        'label': 'data(stage)',
+        'width': 2,
+        'line-color': '#ccc',
+        'target-arrow-color': '#ccc',
+        'target-arrow-shape': 'triangle',
+        'curve-style': 'bezier',
+        'font-size': 10,
+        'text-rotation': 'autorotate'
+      }
+    },
+    {
+      selector: ':selected',
+      style: {
+        'background-color': '#ff6666',
+        'line-color': '#ff6666',
+        'target-arrow-color': '#ff6666'
+      }
+    }
+  ],
+  layout: { name: 'dagre' }
+});
+
+function layoutGraph() {
+  cy.layout({ name: 'dagre' }).run();
+}
+
+document.getElementById('file-input').addEventListener('change', function(evt) {
+  const file = evt.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const content = JSON.parse(e.target.result);
+    cy.elements().remove();
+    cy.add(content);
+    layoutGraph();
+  };
+  reader.readAsText(file);
+});
+
+function downloadGraph() {
+  const elements = cy.json().elements;
+  const blob = new Blob([JSON.stringify(elements, null, 2)], {type: "application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "cyto_graph_modified.json";
+  a.click();
+}
+
+// 인터랙티브 노드 추가
+cy.on('tap', function(evt){
+  if (evt.target === cy) {
+    document.getElementById('node-popup').style.display = 'block';
+    const pos = evt.position;
+    cy._lastTapPosition = pos;
+  }
+});
+
+function confirmAddNode() {
+  const id = document.getElementById('popup-node-id').value.trim();
+  const weight = parseFloat(document.getElementById('popup-node-weight').value);
+  if (!id || cy.getElementById(id).length > 0) {
+    alert("중복되었거나 잘못된 ID입니다.");
+    return;
+  }
+  cy.add({ group: 'nodes', data: { id: id, weight: weight }, position: cy._lastTapPosition });
+  layoutGraph();
+  closePopup();
+}
+
+// 인터랙티브 간선 추가
+let edgeStart = null;
+cy.on('tap', 'node', function(evt) {
+  const node = evt.target;
+  if (!edgeStart) {
+    edgeStart = node.id();
+  } else {
+    if (edgeStart !== node.id()) {
+      document.getElementById('edge-source').innerText = edgeStart;
+      document.getElementById('edge-target').innerText = node.id();
+      document.getElementById('edge-popup').style.display = 'block';
+    }
+    edgeStart = null;
+  }
+});
+
+function confirmAddEdge() {
+  const source = document.getElementById("edge-source").innerText;
+  const target = document.getElementById("edge-target").innerText;
+  const stage = document.getElementById("popup-edge-stage").value;
+  cy.add({ group: 'edges', data: { source, target, stage } });
+  layoutGraph();
+  closePopup();
+}
+
+function closePopup() {
+  document.getElementById('node-popup').style.display = 'none';
+  document.getElementById('edge-popup').style.display = 'none';
+}
+</script>
+
+</body>
+</html>
