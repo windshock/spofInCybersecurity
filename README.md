@@ -1,5 +1,5 @@
 # spofInCybersecurity
-=======
+
 # 🔥 SPOF Mapping and Visualization in Cybersecurity
 
 > A graph-based methodology for identifying and prioritizing **Single Points of Failure (SPOFs)** in real-world infrastructures — with support for visualization, animation, and LLM-assisted modeling.
@@ -87,10 +87,6 @@ python visualize_spof.py
 ---
 
 ## 🎯 Example Output
-
-<p align="center">
-  <img src="spof_static_terminal.png" alt="Static graph visualization showing critical nodes and infection routes." width="600"/>
-</p>
 
 <p align="center">
   <img src="spof_animation.gif" alt="Animated visualization of attack stages across the infrastructure graph." width="600"/>
