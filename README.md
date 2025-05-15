@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # spofInCybersecurity
 =======
 # 🔥 SPOF Mapping and Visualization in Cybersecurity
@@ -151,4 +150,3 @@ Hyeongkwan Lee · [`@windshock`](mailto:windshock@gmail.com) · [windshock.githu
 ## 📄 License
 
 MIT
->>>>>>> b2cf892 (Initial commit: SPOF analyzer and visualization tools)
